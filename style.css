@@ -1,0 +1,111 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#title {
+    background-color: rgb(68, 67, 67);
+    color: rgba(245, 245, 245, 0.973);
+    font-weight: bold;
+    margin: 0;
+    text-align: center;
+    padding: 3px;
+    font-size: xx-large;
+}
+
+.searchSide {
+    background-color: rgba(235, 235, 235, 0.89);
+    font-size: larger;
+}
+h1{
+    margin-left: 15px;
+}
+.input{
+    height: 50px;
+    width: 250px;
+    font-size: xx-large;
+    margin-left: 15px;
+    margin-right: 10px;
+}
+.resultsSide {
+    background-color: white;
+}
+.col-4 {
+    float: left;
+    /* width: 900px; */
+   /* height: 1500px; */
+}
+
+button{
+    background-color: rgb(29, 166, 245);
+    border-radius: 10px;
+    margin-left: 30px;
+    box-shadow:0 0 30px rgb(137, 215, 252);
+    position: absolute;
+    
+   
+}
+.searchIcon{
+    height: 43px;
+    width: auto;
+    
+}
+
+.col-8{
+    float: left;
+    /* height: 1500px; */
+    /* width: 1200px; */
+}
+.row1{
+    /* height: 400px; */
+    border: solid rgb(68, 67, 67);
+    border-radius: 20px;
+}
+#cityPlace{
+    padding-top: 20px;
+    font-size: xx-large;
+    color: rgb(68, 67, 67);
+    float: left;
+}
+/* #currentIcon{
+    float: left;
+} */
+#currentUV{
+    float: left;
+    margin-right: 20px;
+}
+
+#currentUVindex{
+   
+    font-size: x-large;
+
+}
+
+.lowUV{
+    background-color: green;
+    border: rgba(0, 128, 0, 0.548);
+    border-radius: 2px;
+}
+.mediumUV{
+    background-color: yellow;
+    border: rgba(255, 255, 0, 0.514);
+    border-radius: 2px;
+}
+.highUV{
+    background-color: orange;
+    border: rgba(255, 166, 0, 0.479);
+    border-radius: 2px;
+}
+.veryhighUV{
+    background-color: rgb(255, 0, 76);
+    border:  rgba(255, 0, 76, 0.473);
+    border-radius: 2px;
+}.extremeUV{
+    background-color: rgb(112, 29, 112);
+    border: rgba(112, 29, 112, 0.486);
+    border-radius: 2px;
+}
+.col-2{
+    border: solid rgb(71, 69, 68);
+    border-radius: 20px;
+    margin-left: 20px;
+}

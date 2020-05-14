@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <title>Weather forecast</title>
+</head>
+<body>
+    <header id="title">
+        <!-- main page header/title -->
+        <h1>Weather Dashboard</h1>
+    </header>
+    <!-- dashboard section, divided in 1 row 2 columns (2nd column with 2 rows) -->
+    <div class="container">
+        <div class="row">
+            <div class="col-4 searchSide">
+                <!-- <div class="row"> -->
+                    <!-- <Form class="searchForm"> -->
+                    <h1>Search for a City:</h1>
+                    <input type="text" class="input" placeholder="type your city name here">
+                   
+                    <button>
+                        <img class="searchIcon" src="search.png" alt="search icon">
+                    </button>
+                  
+                    <!-- </form> -->
+                <!-- </div> -->
+            </div>
+            <div class="col-8 resultsSide">
+                <div class="row row1">
+                    <h1 id="cityPlace"></h1>
+                    <img id="currentIcon" src="" alt="Weather icon">
+                    <br>
+                    <h3 id="currentTemp"></h3>
+                    <br>
+                    <h3 id="currentHumid"></h3>
+                    <br>
+                    <h3 id="currentWind"></h3>
+                    <br>
+                    <h3 id="currentUV"></h3>
+                   
+                        <p id="currentUVindex"></p>
+                    
+                </div>
+                <div class="row row2">
+                    Forecast placeholder
+                    
+                </div>
+                <div class="row">
+                    <div class="col-2">
+                        <div class="row">1</div>
+                    </div>
+                    <div class="col-2">
+                        <div class="row">1</div>
+                    </div>
+                    <div class="col-2">
+                        <div class="row">1</div>
+                    </div>
+                    <div class="col-2">
+                        <div class="row">1</div>
+                    </div>
+                    <div class="col-2">
+                        <div class="row">1</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript">
+
+        var citySearch = ""
+        var queryURL = ""
+        var id = ""
+        function citySearchF(citySearch){
+        queryURL = "http://api.openweathermap.org/data/2.5/weather?q=" + citySearch + "&appid=663e2813643990a2ac771699fb50ba44" 
+        }
+        var forecast = ""
+        function forecastSearch(lat, lon){
+        forecast = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lon + "&exclude={part}&appid=663e2813643990a2ac771699fb50ba44"  
+        }
+        var iconURL = ""
+        function iconGet(value){
+            iconURL= "http://openweathermap.org/img/wn/" + value + "@2x.png"
+        }
+
+
+        function runAjax(name, url, thenFunction) {
+            $.ajax({
+                url: url,
+                method: "GET",
+            }).then(function (response) {
+                if (thenFunction) {
+                    thenFunction(name, response);
+            }
+            });
+        }
+
+        function printResponse(name, res) {
+            console.log(name, response.name)
+            console.log(name, response.id)
+        }
+          /* --------------- Search --------------- */
+        $(".searchIcon").on("click", function(event){
+            event.preventDefault();
+            citySearch = $(".input").val();
+            citySearchF(citySearch)
+            console.log(citySearch)
+            console.log(queryURL);       
+            runAjax("citySearch", queryURL, uploadSearch);
+            console.log("fcst" + forecast);
+            
+        });
+        // upload search results
+        function uploadSearch(name, resp){
+            console.log(name, resp);
+            console.log("date", convertDate(resp.dt))
+            console.log("City Search: ", resp.name);
+            $("#cityPlace").text(resp.name+ ", "+convertDate(resp.dt));
+            iconGet(resp.weather[0].icon)
+            $("#currentIcon").attr("src",iconURL)
+            var temp = (resp.main.temp)-273.15;
+            var t = temp.toFixed(1);
+            $("#currentTemp").text("Temperature: " + t + " °C");
+            $("#currentHumid").text("Humidity: " + resp.main.humidity + " %");
+            $("#currentWind").text("Wind Speed: " + resp.wind.speed + " MPH");
+            forecastSearch(resp.coord.lat, resp.coord.lon)
+            runAjax("cityForecast", forecast, uploadForecast);
+        }
+         // upload forecast results
+         function uploadForecast(name, resp){
+            console.log(name, resp);
+            console.log("forecast", resp);
+           // $("#cityDate").text(resp.list[0].dt_txt);
+           $("#currentUV").text("UV index: ");
+           $("#currentUVindex").text(resp.current.uvi);
+           var  UV = parseInt(resp.current.uvi);
+           if(UV<2){
+            $("#currentUVindex").attr("class","lowUV");
+           }else
+           if(UV<5){
+            $("#currentUVindex").attr("class","mediumUV");
+           }else
+           if(UV<7){
+            $("#currentUVindex").attr("class","highUV");
+           }else
+           if(UV<10){
+            $("#currentUVindex").attr("class","veryhighUV");
+           }else
+           if(UV>10){
+            $("#currentUVindex").attr("class","extremeUV");
+           }
+        }
+
+        //convert Unix date to normal date function
+
+        function convertDate(value){
+            var a = new Date(value*1000);
+            months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            var day = a.getDate();
+            var month = months[a.getMonth()];
+            var year = a.getFullYear();
+            var fullDate = day +" "+ month +" "+ year
+            return fullDate;
+        }
+
+    </script>
+</body>
+</html>
