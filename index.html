@@ -16,55 +16,97 @@
     <div class="container">
         <div class="row">
             <div class="col-4 searchSide">
+                <div class="row">
                 <!-- <div class="row"> -->
                     <!-- <Form class="searchForm"> -->
                     <h1>Search for a City:</h1>
-                    <input type="text" class="input" placeholder="type your city name here">
-                   
-                    <button>
-                        <img class="searchIcon" src="search.png" alt="search icon">
-                    </button>
-                  
+                    <div>
+                        <input type="text" class="input" placeholder="type here">
+                    
+                        <button>
+                            <img class="searchIcon" src="search.png" alt="search icon">
+                        </button>
+                    </div>
                     <!-- </form> -->
                 <!-- </div> -->
+                </div>
+                <div class="row">
+                    <div class="history"></div>
+                </div>
             </div>
             <div class="col-8 resultsSide">
                 <div class="row row1">
+                    <div class="col">
                     <h1 id="cityPlace"></h1>
                     <img id="currentIcon" src="" alt="Weather icon">
                     <br>
+                    
                     <h3 id="currentTemp"></h3>
                     <br>
+                    
                     <h3 id="currentHumid"></h3>
                     <br>
+                    
                     <h3 id="currentWind"></h3>
                     <br>
+                    
                     <h3 id="currentUV"></h3>
                    
                         <p id="currentUVindex"></p>
-                    
+                    <br>
+                </div>
                 </div>
                 <div class="row row2">
-                    Forecast placeholder
+                    
                     
                 </div>
-                <div class="row">
-                    <div class="col-2">
-                        <div class="row">1</div>
+                
+                    <div class="row">
+                        <h2 id="5daysForecast"></h2>
                     </div>
-                    <div class="col-2">
-                        <div class="row">1</div>
+                    <div class="row">
+                        <div class="col-2">
+                            <div class="row">
+                                <p id="fcstDate1"></p>
+                                <img id="fcstIcon1" src="" alt="Forecast Icon">
+                                <p id="fcstTemp1"></p>
+                                <p id="fcstHumid1"></p>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div class="row">
+                                <p id="fcstDate2"></p>
+                                <img id="fcstIcon2" src="" alt="Forecast Icon">
+                                <p id="fcstTemp2"></p>
+                                <p id="fcstHumid2"></p>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div class="row">
+                                <p id="fcstDate3"></p>
+                                <img id="fcstIcon3" src="" alt="Forecast Icon">
+                                <p id="fcstTemp3"></p>
+                                <p id="fcstHumid3"></p>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div class="row">
+                                <p id="fcstDate4"></p>
+                                <img id="fcstIcon4" src="" alt="Forecast Icon">
+                                <p id="fcstTemp4"></p>
+                                <p id="fcstHumid4"></p>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div class="row">
+                                <p id="fcstDate5"></p>
+                                <img id="fcstIcon5" src="" alt="Forecast Icon">
+                                <p id="fcstTemp5"></p>
+                                <p id="fcstHumid5"></p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-2">
-                        <div class="row">1</div>
-                    </div>
-                    <div class="col-2">
-                        <div class="row">1</div>
-                    </div>
-                    <div class="col-2">
-                        <div class="row">1</div>
-                    </div>
-                </div>
+                
 
             </div>
         </div>
@@ -73,21 +115,34 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script type="text/javascript">
 
+        $("#resultsSide").empty();
+
         var citySearch = ""
+        var index =0;
+        if (localStorage.getItem("last")){
+        index = parseInt(localStorage.getItem("last"))
+        }
+        // array to save search history
+        var searchHistory = []
+        // section to build the call URL for the API conctenating the search city or history click
         var queryURL = ""
         var id = ""
         function citySearchF(citySearch){
         queryURL = "http://api.openweathermap.org/data/2.5/weather?q=" + citySearch + "&appid=663e2813643990a2ac771699fb50ba44" 
         }
+        // first query returns he weather but not forecast, I use Lat & Lon to from first call response to search for forecast in a second call
         var forecast = ""
         function forecastSearch(lat, lon){
         forecast = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lon + "&exclude={part}&appid=663e2813643990a2ac771699fb50ba44"  
         }
+
+        // icons are repsented with a code in the response object, here the url is built to get the icon picture
         var iconURL = ""
         function iconGet(value){
             iconURL= "http://openweathermap.org/img/wn/" + value + "@2x.png"
         }
 
+        //function to call the API
 
         function runAjax(name, url, thenFunction) {
             $.ajax({
@@ -99,21 +154,49 @@
             }
             });
         }
-
-        function printResponse(name, res) {
-            console.log(name, response.name)
-            console.log(name, response.id)
+        // recovering history search from local storage
+        get();
+        function get(){
+            var length = parseInt(localStorage.getItem("last"))+1;
+            citySearchF(localStorage.getItem(index))     
+            runAjax("citySearch", queryURL, uploadSearch);
+            for (let i=1; i<length ;i++){
+                searchHistory.push(localStorage.getItem(i))
+                var newdiv = $("<div>")
+                var newH3 = $("<h3>");
+                newH3.text(localStorage.getItem(i))
+                newH3.attr("class","historySearch")
+                newH3.attr("value",localStorage.getItem(i))
+                newdiv.append(newH3)
+                $(".history").prepend(newdiv)
+            };
         }
-          /* --------------- Search --------------- */
+        
+        //  search from input section
         $(".searchIcon").on("click", function(event){
             event.preventDefault();
             citySearch = $(".input").val();
+            index++
+            localStorage.setItem("last", index)
+            localStorage.setItem(index, citySearch)
+            searchHistory.push(citySearch)
+            console.log(searchHistory);
+           $(".history").empty()
+            for (i=0; i<searchHistory.length;i++){
+                var newdiv = $("<div>")
+                var newH3 = $("<h3>");
+                newH3.text(searchHistory[i])
+                newH3.attr("class","historySearch")
+                newH3.attr("value",searchHistory[i])
+                newdiv.append(newH3)
+                $(".history").prepend(newdiv)
+            }
             citySearchF(citySearch)
             console.log(citySearch)
             console.log(queryURL);       
             runAjax("citySearch", queryURL, uploadSearch);
             console.log("fcst" + forecast);
-            
+            location.reload();
         });
         // upload search results
         function uploadSearch(name, resp){
@@ -130,12 +213,13 @@
             $("#currentWind").text("Wind Speed: " + resp.wind.speed + " MPH");
             forecastSearch(resp.coord.lat, resp.coord.lon)
             runAjax("cityForecast", forecast, uploadForecast);
+            
         }
          // upload forecast results
          function uploadForecast(name, resp){
             console.log(name, resp);
             console.log("forecast", resp);
-           // $("#cityDate").text(resp.list[0].dt_txt);
+        
            $("#currentUV").text("UV index: ");
            $("#currentUVindex").text(resp.current.uvi);
            var  UV = parseInt(resp.current.uvi);
@@ -154,6 +238,16 @@
            if(UV>10){
             $("#currentUVindex").attr("class","extremeUV");
            }
+           $("#5daysForecast").text("5 Days forecast:")
+           for(i=1; i<6 ;i++){
+               $("#fcstDate"+i).text(convertDate(resp.daily[i].dt))
+               iconGet(resp.daily[i].weather[0].icon)
+                $("#fcstIcon"+i).attr("src",iconURL)
+                var temp = (resp.daily[i].temp.day)-273.15;
+                var t = temp.toFixed(1);
+                $("#fcstTemp"+i).text("Temp: " + t + " °C");
+                $("#fcstHumid"+i).text("Humidity: " + resp.daily[i].humidity + " %");
+           }
         }
 
         //convert Unix date to normal date function
@@ -167,6 +261,14 @@
             var fullDate = day +" "+ month +" "+ year
             return fullDate;
         }
+        // search weather from a city in the history search
+        $(".historySearch").on("click", function(event){
+            event.preventDefault();
+            var cityHistory = $(this).attr("value");
+            console.log(cityHistory)
+            citySearchF(cityHistory)     
+            runAjax("historySearch", queryURL, uploadSearch);
+        });
 
     </script>
 </body>
