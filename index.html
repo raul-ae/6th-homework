@@ -128,7 +128,7 @@
         var queryURL = ""
         var id = ""
         function citySearchF(citySearch){
-        queryURL = "http://api.openweathermap.org/data/2.5/weather?q=" + citySearch + "&appid=663e2813643990a2ac771699fb50ba44" 
+        queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + citySearch + "&appid=663e2813643990a2ac771699fb50ba44" 
         }
         // first query returns he weather but not forecast, I use Lat & Lon to from first call response to search for forecast in a second call
         var forecast = ""
@@ -139,7 +139,7 @@
         // icons are repsented with a code in the response object, here the url is built to get the icon picture
         var iconURL = ""
         function iconGet(value){
-            iconURL= "http://openweathermap.org/img/wn/" + value + "@2x.png"
+            iconURL= "https://openweathermap.org/img/wn/" + value + "@2x.png"
         }
 
         //function to call the API
